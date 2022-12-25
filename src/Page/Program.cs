@@ -1,4 +1,4 @@
-namespace Web
+namespace Page
 {
     public class Program
     {

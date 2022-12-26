@@ -1,3 +1,8 @@
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Umbraco.Cms.Core.DependencyInjection;
+using Umbraco.Extensions;
 namespace Page
 {
     public class Startup
@@ -47,7 +52,6 @@ namespace Page
             {
                 app.UseDeveloperExceptionPage();
             }
-
             app.UseUmbraco()
                 .WithMiddleware(u =>
                 {
@@ -59,6 +63,7 @@ namespace Page
                     u.UseInstallerEndpoints();
                     u.UseBackOfficeEndpoints();
                     u.UseWebsiteEndpoints();
+                    
                 });
         }
     }

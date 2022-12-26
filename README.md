@@ -1,4 +1,4 @@
-# Umbraco 11 Docker Image
+# Umbraco 11 + SQLite + uSync docker Image 
 
 
 Exmaple `docker-compose.yml` file
@@ -18,6 +18,7 @@ services:
      - ./data/sys/temp:/output/umbraco/Data/TEMP
      - ./data/usr/db:/output/umbraco/Data/db
      - ./data/usr/views:/output/Views
+     - ./data/usr/usync:/output/uSync
      - ./data/usr/media:/output/wwwroot/media
      - ./data/usr/misc/favicon.ico:/output/wwwroot/favicon.ico
      - ./data/etc/appsettings.json:/output/appsettings.json

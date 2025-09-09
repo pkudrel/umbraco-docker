@@ -481,6 +481,8 @@ umbraco-package-schema.json
 # Media files
 /wwwroot/media/
 
+# DEv
+dev/*
 
 # LLMs
 

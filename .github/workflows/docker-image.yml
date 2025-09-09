@@ -2,8 +2,9 @@ name: Docker Image CI
 
 on:
   push:
-    # Publish semver tags as releases.
-    tags: [ 'v*.*.*' ]
+    branches: [ 'production' ]
+  # Publish semver tags as releases.
+  tags: [ 'v*.*.*' ]
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -12,17 +13,28 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Generate semantic version
+      id: semver
+      uses: ./.github/actions/semver-js
+      with:
+        mode: config-change
+        config_file: version.txt
+        tag_prefix: v
     
     - name: Docker meta
       id: meta
-      uses: docker/metadata-action@v3
+      uses: docker/metadata-action@v5
       with:
         # list of Docker images to use as base name for tags
         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
@@ -30,13 +42,14 @@ jobs:
           type=schedule
           type=ref,event=branch
           type=ref,event=pr
-          type=semver,pattern={{version}}
-          type=semver,pattern={{major}}.{{minor}}
-          type=semver,pattern={{major}}
+          type=raw,value=${{ steps.semver.outputs.version }}
+          type=raw,value=${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}
+          type=raw,value=${{ steps.semver.outputs.major }}
+          type=raw,value=latest,enable={{is_default_branch}}
           type=sha
     
     - name: Login to GitHub Container Registry
-      uses: docker/login-action@v1
+      uses: docker/login-action@v3
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
@@ -44,10 +57,13 @@ jobs:
           
     - name: Build and push
       id: docker_build
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v5
       with:
         context: .
-       # push: ${{ github.event_name != 'pull_request' }}
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
+        build-args: |
+          VERSION=${{ steps.semver.outputs.version }}
+          BUILD_DATE=${{ steps.semver.outputs.build_date_utc }}
+          VCS_REF=${{ steps.semver.outputs.sha }}

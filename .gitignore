@@ -483,7 +483,8 @@ umbraco-package-schema.json
 
 # DEv
 dev/*
+!dev/example-page/docker-compose.yml
 
 # LLMs
-
 .claude/settings.local.json
+

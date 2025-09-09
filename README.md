@@ -94,6 +94,32 @@ The Umbraco application can be configured through:
 - `appsettings.json` modifications
 - Volume mounts for persistent data
 
+## Exmaple `docker-compose.yml` file
+```yaml
+version: '3.7'
+
+services:
+  umbraco-service:
+    container_name: umbraco-page
+    image: ghcr.io/pkudrel/umbraco-docker:1.0
+    restart: always
+    entrypoint: [ "dotnet", "Page.dll" ]
+    networks:
+      - nginx-proxy-manager
+    volumes:
+     - ./data/sys/logs:/output/umbraco/Logs
+     - ./data/sys/temp:/output/umbraco/Data/TEMP
+     - ./data/usr/db:/output/umbraco/Data/db
+     - ./data/usr/views:/output/Views
+     - ./data/usr/usync:/output/uSync
+     - ./data/usr/media:/output/wwwroot/media
+     - ./data/usr/misc/favicon.ico:/output/wwwroot/favicon.ico
+     - ./data/etc/appsettings.json:/output/appsettings.json
+networks:
+  nginx-proxy-manager:
+    external: true
+
+```
 ## License
 
 [License details in LICENSE.md](LICENSE.md)

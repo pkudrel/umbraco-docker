@@ -1,0 +1,52 @@
+services:
+  umbraco-service:
+    container_name: umbraco-page
+    image: ghcr.io/pkudrel/umbraco-docker:latest
+    restart: always
+    entrypoint: [ "dotnet", "UmbracoPage.dll" ]
+    environment:
+      HTTP_PORTS: "8080"     # override the base image default
+
+      # ---- Serilog: REMOVE every sink, then add Console only ----
+      Serilog__WriteTo__Clear: "true"
+      Serilog__AuditTo__Clear: "true"
+
+      Serilog__MinimumLevel__Default: "Information"
+      Serilog__MinimumLevel__Override__Microsoft: "Warning"
+      Serilog__MinimumLevel__Override__Umbraco: "Information"
+
+      # Load only console sink
+      Serilog__Using__0: "Serilog.Sinks.Console"
+      Serilog__WriteTo__0__Name: "Console"
+      Serilog__WriteTo__0__Args__outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"
+
+      # Make the built-in Microsoft logger text (or set to None to silence)
+      Logging__Console__FormatterName: "simple"
+      Logging__Console__IncludeScopes: "false"
+      # Logging__LogLevel__Default: "None"   # uncomment to silence Microsoft logger completely
+
+      # ---- DB + unattended (unchanged) ----
+      ConnectionStrings__umbracoDbDSN: "Data Source=|DataDirectory|/db/Umbraco.sqlite.db;Cache=Shared;Foreign Keys=True;Pooling=True"
+      ConnectionStrings__umbracoDbDSN_ProviderName: "Microsoft.Data.Sqlite"
+      Umbraco__CMS__Unattended__InstallUnattended: "true"
+      Umbraco__CMS__Unattended__UnattendedUserName: "Admin"
+      Umbraco__CMS__Unattended__UnattendedUserEmail: "admin@example.com"
+      Umbraco__CMS__Unattended__UnattendedUserPassword: "ChangeMe1234"
+
+    ports:
+      - "8080:8080"
+
+    volumes:
+      #  keep your data mounts
+      - ./app/work/dp-keys:/root/.aspnet/DataProtection-Keys
+      - ./app/log:/app/umbraco/Logs
+      - ./app/work/data:/app/umbraco/Data
+      - ./app/work/usync:/app/uSync
+      - ./app/work/models:/app/umbraco/models
+      - ./app/work/views:/app/Views
+      - ./app/wwwroot/media:/app/wwwroot/media
+      - ./app/wwwroot/scripts:/app/wwwroot/scripts
+      - ./app/wwwroot/css:/app/wwwroot/css
+      - ./app/wwwroot/fonts:/app/wwwroot/fonts
+      - ./app/wwwroot/gfx/icon/favicon.ico:/app/wwwroot/favicon.ico
+      - ./app/config/appsettings.json:/app/appsettings.json

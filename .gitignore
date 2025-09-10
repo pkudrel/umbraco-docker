@@ -488,3 +488,12 @@ dev/*
 # LLMs
 .claude/settings.local.json
 
+# Example page
+/example-page/**
+
+!/example-page/docker-compose.yml
+!/example-page/app/
+!/example-page/app/config/
+!/example-page/app/config/appsettings.json
+
+

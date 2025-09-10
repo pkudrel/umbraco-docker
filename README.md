@@ -36,6 +36,9 @@ docker run -p 8080:8080 umbraco-docker
 ```
 ├── src/
 │   └── UmbracoPage/        # Umbraco CMS application
+├── example-page/           # Example deployment setup
+│   ├── app/config/         # Example configuration
+│   └── docker-compose.yml  # Ready-to-use deployment
 ├── .github/
 │   ├── actions/
 │   │   └── semver-js/      # Custom semantic versioning action
@@ -86,6 +89,7 @@ The build process:
 2. Builds multi-stage Docker image
 3. Injects version metadata as OCI labels
 4. Publishes to `ghcr.io/pkudrel/umbraco-docker`
+5. Creates GitHub release with auto-generated release notes
 
 ## Configuration
 
@@ -94,32 +98,57 @@ The Umbraco application can be configured through:
 - `appsettings.json` modifications
 - Volume mounts for persistent data
 
-## Exmaple `docker-compose.yml` file
-```yaml
-version: '3.7'
+## Example Page Setup
 
-services:
-  umbraco-service:
-    container_name: umbraco-page
-    image: ghcr.io/pkudrel/umbraco-docker:1.0
-    restart: always
-    entrypoint: [ "dotnet", "Page.dll" ]
-    networks:
-      - nginx-proxy-manager
-    volumes:
-     - ./data/sys/logs:/output/umbraco/Logs
-     - ./data/sys/temp:/output/umbraco/Data/TEMP
-     - ./data/usr/db:/output/umbraco/Data/db
-     - ./data/usr/views:/output/Views
-     - ./data/usr/usync:/output/uSync
-     - ./data/usr/media:/output/wwwroot/media
-     - ./data/usr/misc/favicon.ico:/output/wwwroot/favicon.ico
-     - ./data/etc/appsettings.json:/output/appsettings.json
-networks:
-  nginx-proxy-manager:
-    external: true
+The `example-page/` directory contains a ready-to-use example deployment:
 
+```bash
+# Navigate to example setup
+cd example-page
+
+# Start the example deployment
+docker-compose up -d
 ```
+
+**Includes**:
+- **Pre-configured Umbraco settings** (`app/config/appsettings.json`)
+- **Volume mapping** for persistent data and configuration
+- **Ready-to-run** Docker Compose setup
+
+The example demonstrates best practices for:
+- Configuration management
+- Data persistence
+- Volume mounting
+- Environment setup
+
+### Docker Compose Features
+
+The included `docker-compose.yml` provides:
+
+**Environment Configuration**:
+- Custom port mapping (8080)
+- Serilog console-only logging
+- SQLite database with unattended installation
+
+**Volume Mappings**:
+```yaml
+volumes:
+  - ./app/work/dp-keys:/root/.aspnet/DataProtection-Keys  # ASP.NET data protection
+  - ./app/log:/app/umbraco/Logs                          # Application logs
+  - ./app/work/data:/app/umbraco/Data                     # Umbraco data files
+  - ./app/work/usync:/app/uSync                           # uSync configuration
+  - ./app/work/models:/app/umbraco/models                 # Generated models
+  - ./app/work/views:/app/Views                           # Custom views
+  - ./app/wwwroot/media:/app/wwwroot/media                # Media files
+  - ./app/config/appsettings.json:/app/appsettings.json   # Configuration override
+```
+
+**Key Features**:
+- **Unattended install**: Automatic setup without manual configuration
+- **Persistent data**: All important data survives container restarts
+- **Custom configuration**: Override settings via volume-mounted appsettings.json
+- **Development ready**: Includes logging, views, and media persistence
+
 ## License
 
 [License details in LICENSE.md](LICENSE.md)

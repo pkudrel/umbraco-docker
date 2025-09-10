@@ -495,5 +495,9 @@ dev/*
 !/example-page/app/
 !/example-page/app/config/
 !/example-page/app/config/appsettings.json
+!/example-page/app/wwwroot/
+!/example-page/app/wwwroot/gfx/
+!/example-page/app/wwwroot/gfx/icon/
+!/example-page/app/wwwroot/gfx/icon/favicon.ico
 
 

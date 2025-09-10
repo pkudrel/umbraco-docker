@@ -133,19 +133,6 @@ The included `docker-compose.yml` provides:
 - Serilog console-only logging
 - SQLite database with unattended installation
 
-**Volume Mappings**:
-```yaml
-volumes:
-  - ./app/work/dp-keys:/root/.aspnet/DataProtection-Keys  # ASP.NET data protection
-  - ./app/log:/app/umbraco/Logs                          # Application logs
-  - ./app/work/data:/app/umbraco/Data                     # Umbraco data files
-  - ./app/work/usync:/app/uSync                           # uSync configuration
-  - ./app/work/models:/app/umbraco/models                 # Generated models
-  - ./app/work/views:/app/Views                           # Custom views
-  - ./app/wwwroot/media:/app/wwwroot/media                # Media files
-  - ./app/config/appsettings.json:/app/appsettings.json   # Configuration override
-```
-
 **Key Features**:
 - **Unattended install**: Automatic setup without manual configuration
 - **Persistent data**: All important data survives container restarts

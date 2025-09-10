@@ -16,7 +16,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
 
     steps:
@@ -67,3 +67,12 @@ jobs:
           VERSION=${{ steps.semver.outputs.version }}
           BUILD_DATE=${{ steps.semver.outputs.build_date_utc }}
           VCS_REF=${{ steps.semver.outputs.sha }}
+
+    - name: Create GitHub Release
+      if: github.event_name == 'push' && github.ref == 'refs/heads/production'
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.semver.outputs.tag }}
+        name: Release ${{ steps.semver.outputs.version }}
+        generate_release_notes: true
+        make_latest: true

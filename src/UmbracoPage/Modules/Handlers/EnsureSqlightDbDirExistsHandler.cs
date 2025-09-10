@@ -9,12 +9,12 @@ using Umbraco.Cms.Core.Notifications;
 
 namespace UmbracoPage.Modules.Handlers;
 
-public sealed class EnsureDataSubdir : INotificationHandler<UmbracoApplicationStartingNotification>
+public sealed class EnsureSqlightDbDirExistsHandler : INotificationHandler<UmbracoApplicationStartingNotification>
 {
     private readonly IHostingEnvironment _env;
-    private readonly ILogger<EnsureDataSubdir> _log;
+    private readonly ILogger<EnsureSqlightDbDirExistsHandler> _log;
 
-    public EnsureDataSubdir(IHostingEnvironment env, ILogger<EnsureDataSubdir> log)
+    public EnsureSqlightDbDirExistsHandler(IHostingEnvironment env, ILogger<EnsureSqlightDbDirExistsHandler> log)
     {
         _env = env;
         _log = log;
@@ -32,10 +32,10 @@ public sealed class EnsureDataSubdir : INotificationHandler<UmbracoApplicationSt
     }
 }
 
-public class Register : IComposer
+public class RegisterEnsureSqlightDbDirExistsHandler : IComposer
 {
     public void Compose(IUmbracoBuilder builder)
     {
-        builder.AddNotificationHandler<UmbracoApplicationStartingNotification, EnsureDataSubdir>();
+        builder.AddNotificationHandler<UmbracoApplicationStartingNotification, EnsureSqlightDbDirExistsHandler>();
     }
 }

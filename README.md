@@ -2,6 +2,9 @@
 
 Docker container for Umbraco CMS v16.2.0 built on .NET 9.0.
 
+**Includes additional packages**:
+- **uSync Complete v16.0.6** - Content synchronization and deployment
+
 ## Quick Start
 
 ```bash

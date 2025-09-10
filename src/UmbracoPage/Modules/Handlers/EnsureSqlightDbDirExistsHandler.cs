@@ -1,9 +1,11 @@
 ﻿using System.IO;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Events;
+using Umbraco.Cms.Core.Extensions;
 using Umbraco.Cms.Core.Hosting;
 using Umbraco.Cms.Core.Notifications;
 
@@ -11,10 +13,10 @@ namespace UmbracoPage.Modules.Handlers;
 
 public sealed class EnsureSqlightDbDirExistsHandler : INotificationHandler<UmbracoApplicationStartingNotification>
 {
-    private readonly IHostingEnvironment _env;
+    private readonly IHostEnvironment _env; // Change type to IHostEnvironment
     private readonly ILogger<EnsureSqlightDbDirExistsHandler> _log;
 
-    public EnsureSqlightDbDirExistsHandler(IHostingEnvironment env, ILogger<EnsureSqlightDbDirExistsHandler> log)
+    public EnsureSqlightDbDirExistsHandler(IHostEnvironment env, ILogger<EnsureSqlightDbDirExistsHandler> log) // Change parameter type
     {
         _env = env;
         _log = log;
@@ -24,7 +26,7 @@ public sealed class EnsureSqlightDbDirExistsHandler : INotificationHandler<Umbra
     {
         // Physical path to umbraco/Data
 
-        var dataRoot = _env.MapPathContentRoot(Constants.SystemDirectories.Data);
+        var dataRoot = _env.MapPathContentRoot(Constants.SystemDirectories.Data); // Use extension method from Microsoft.Extensions.Hosting
         var myDir = Path.Combine(dataRoot, "db"); // e.g. /umbraco/Data/db
         if (Directory.Exists(myDir) == false)
             Directory.CreateDirectory(myDir);

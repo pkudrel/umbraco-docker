@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/aspnet:9.0-noble-chiseled-extra AS base
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 WORKDIR /app
 EXPOSE 8080
 
@@ -15,8 +15,7 @@ WORKDIR "/src/UmbracoPage"
 RUN dotnet build "UmbracoPage.csproj" -c  $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
-# RUN dotnet publish "UmbracoPage.csproj" -c  $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-RUN dotnet publish "UmbracoPage.csproj" -c  $BUILD_CONFIGURATION -o /app/publish --no-restore
+RUN dotnet publish "UmbracoPage.csproj" -c  $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 ARG VERSION=unknown
